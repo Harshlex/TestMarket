@@ -7,6 +7,7 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import ru.yandex.qatools.ashot.AShot;
@@ -14,7 +15,6 @@ import ru.yandex.qatools.ashot.Screenshot;
 import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 
 import javax.imageio.ImageIO;
-
 
 public class MainTest {
     public String baseUL = "https://yandex.ru/";
@@ -27,7 +27,6 @@ public class MainTest {
         driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
         driver.manage().window().maximize();
         driver.get(baseUL);
-
     }
 
     @Test
@@ -35,21 +34,22 @@ public class MainTest {
 
         //проверка наличия логотипа Яндекса
         WebElement logo = driver.findElement(By.xpath("//div [@aria-label='Яндекс']"));
-        Assert.assertNotNull(logo, "Отсутствует логотип яндекса на главной странице");
+        Assert.assertTrue(logo.isDisplayed(), "Не отображается логотип яндекса на главной странице");
 
         //проверка наличия раздела "Маркет"
         WebElement market = driver.findElement(By.xpath("//a [@data-id='market']"));
-        Assert.assertNotNull(market, "Отсутствует раздел Маркет");
+        Assert.assertTrue(market.isDisplayed(), "Отсутствует раздел Маркет");
 
         //переход на Маркет
-        String marketLink = market.getAttribute("href");
-        driver.get(marketLink);
-
+        /*String marketLink = market.getAttribute("href");
+        driver.get(marketLink);*/
+        market.click();
+        ArrayList<String> tabs2 = new ArrayList<>(driver.getWindowHandles());
+        driver.switchTo().window(tabs2.get(1));
 
         //проверка наличия заголовка Маркет
         WebElement logoMarket = driver.findElement(By.xpath("//a [@id = 'logoPartMarket']"));
-        Assert.assertNotNull(logoMarket, "Отсутствует заголовок Маркет");
-
+        Assert.assertTrue(logoMarket.isDisplayed(), "Заголовок на странице Яндекс Маркет не отображается");
 
         //поиск на Маркете
         WebElement search = driver.findElement(By.xpath("//input [@placeholder = 'Искать товары']"));
@@ -58,18 +58,18 @@ public class MainTest {
         button.click();
 
         //выбрать - Сначала мой регион
-        WebElement checkbox = driver.findElement(By.xpath("//div [@title='Сначала мой регион']"));
+        WebElement checkbox = driver.findElement(By.xpath("//*[text()='Сначала мой регион']//ancestor::label//input[@type='checkbox']"));
         checkbox.click();
+        driver.navigate().refresh();
 
         //проверка галочки - Сначала мой регион
-        //Assert.assertTrue(checkbox.isSelected(), "Должна быть выбрана галочка \"Сначала мой регион\"");
-
+        Assert.assertTrue(checkbox.isSelected(), "Должна быть выбрана галочка \"Сначала мой регион\"");
     }
 
     @AfterTest
-    /*public void endSession() {
+    public void endSession() {
         driver.quit();
-    }*/
+    }
 
     public void takeScreenshot()
     {
@@ -81,7 +81,5 @@ public class MainTest {
         } catch (IOException e){
             e.printStackTrace();
         }
-
-        driver.quit();
     }
 }
