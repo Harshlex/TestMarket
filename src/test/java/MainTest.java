@@ -41,8 +41,6 @@ public class MainTest {
         Assert.assertTrue(market.isDisplayed(), "Отсутствует раздел Маркет");
 
         //переход на Маркет
-        /*String marketLink = market.getAttribute("href");
-        driver.get(marketLink);*/
         market.click();
         ArrayList<String> tabs2 = new ArrayList<>(driver.getWindowHandles());
         driver.switchTo().window(tabs2.get(1));
