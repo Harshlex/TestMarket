@@ -22,7 +22,7 @@ public class MainTest {
 
     @BeforeTest
     public void setup() {
-        System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "chromedriver");
         driver = new ChromeDriver();
         driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
         driver.manage().window().maximize();
@@ -56,7 +56,7 @@ public class MainTest {
         button.click();
 
         //выбрать - Сначала мой регион
-        WebElement checkbox = driver.findElement(By.xpath("//*[text()='Сначала мой регион']//ancestor::label//input[@type='checkbox']"));
+        WebElement checkbox = driver.findElement(By.xpath("//div[@title='Сначала мой регион']//ancestor::label//input[@type='checkbox']"));
         checkbox.click();
         driver.navigate().refresh();
 
